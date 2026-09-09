@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+backend/__pycache__/
+__pycache__/
+.pytest_cache/
+
+# Build outputs
+dist/
+build/
+
+# Local databases & temp files
+*.db
+*.log
+*.zip
+.DS_Store
+.env
+.idea/
+.vscode/
