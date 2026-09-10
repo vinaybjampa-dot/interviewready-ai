@@ -5,8 +5,7 @@ __pycache__/
 .pytest_cache/
 
 # Build outputs
-dist/
-build/
+# (frontend/dist is tracked for instant Render deployment)
 
 # Local databases & temp files
 *.db
