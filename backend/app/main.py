@@ -15,7 +15,8 @@ from .routers import (
     communication,
     technical,
     interview,
-    progress
+    progress,
+    chat
 )
 
 @asynccontextmanager
@@ -50,6 +51,7 @@ app.include_router(communication.router)
 app.include_router(technical.router)
 app.include_router(interview.router)
 app.include_router(progress.router)
+app.include_router(chat.router)
 
 @app.get("/api/health")
 def health():

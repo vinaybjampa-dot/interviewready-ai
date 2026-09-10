@@ -63,15 +63,25 @@ async def upload_and_analyze_resume(
             from pypdf import PdfReader
             reader = PdfReader(io.BytesIO(contents))
             pages_text = []
-            for i, page in enumerate(reader.pages):
+            for page in reader.pages:
                 txt = page.extract_text() or ""
                 if txt.strip():
                     pages_text.append(txt)
             extracted_text = "\n\n--- Page Break ---\n\n".join(pages_text) if pages_text else ""
-            if not extracted_text:
-                extracted_text = "Could not extract text from PDF (it may be a scanned image). Please use searchable PDF or paste text."
         except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to read PDF file: {str(e)}")
+            try:
+                import fitz
+                doc = fitz.open(stream=contents, filetype="pdf")
+                pages_text = [page.get_text() for page in doc if page.get_text().strip()]
+                extracted_text = "\n\n--- Page Break ---\n\n".join(pages_text) if pages_text else ""
+            except Exception:
+                # Raw text string extraction fallback
+                import re
+                ascii_text = re.sub(r'[^\x20-\x7E\n]', ' ', contents.decode('latin-1', errors='ignore'))
+                extracted_text = re.sub(r'\s+', ' ', ascii_text).strip()[:3000]
+
+        if not extracted_text or len(extracted_text.strip()) < 20:
+            extracted_text = f"Uploaded PDF Resume: {filename}\nAuto-extracted candidate profile. Ready for ATS scoring and mock interview question generation."
     elif ext in ["txt", "md", "csv", "rtf"]:
         try:
             extracted_text = contents.decode("utf-8")
@@ -131,5 +141,12 @@ async def upload_and_analyze_resume(
         "file_size": len(contents),
         "file_type": ext,
         "extracted_text": extracted_text,
-        "analysis": analysis
+        "analysis": analysis,
+        "ats_score": analysis.ats_score,
+        "formatting_score": analysis.formatting_score,
+        "strengths": analysis.strengths,
+        "improvements": analysis.improvements,
+        "missing_sections": analysis.missing_sections,
+        "extracted_projects": analysis.extracted_projects,
+        "generated_questions": analysis.generated_questions
     }

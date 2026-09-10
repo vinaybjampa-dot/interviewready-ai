@@ -15,6 +15,7 @@ import MockInterviewSetup from './components/MockInterviewSetup';
 import LiveInterviewRoom from './components/LiveInterviewRoom';
 import InterviewResults from './components/InterviewResults';
 import ProgressAnalytics from './components/ProgressAnalytics';
+import AIChatBot from './components/AIChatBot';
 
 export default function App() {
   const { activeTab } = useStudent();
@@ -63,6 +64,9 @@ export default function App() {
       <main className="flex-1 pb-16">
         {renderActiveTab()}
       </main>
+
+      {/* 24/7 AI Placement Mentor Floating Chatbot */}
+      <AIChatBot />
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950/90 py-8 px-4 text-center text-xs text-slate-500">

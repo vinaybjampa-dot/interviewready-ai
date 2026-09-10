@@ -68,14 +68,17 @@ export default function LiveInterviewRoom() {
   const recognitionRef = useRef(null);
   const callTimerRef = useRef(null);
 
-  // Default agent fallback
-  const activeAgent = selectedInterviewer || {
-    id: 'vikram',
-    name: 'Vikram Malhotra',
-    title: 'VP of Engineering & Tech Lead',
-    image: '/interviewers/vikram.jpg',
-    personality: 'Professional'
-  };
+  // Active interviewer agent state with in-room switching support
+  const [currentAgent, setCurrentAgent] = useState(
+    selectedInterviewer || {
+      id: 'vikram',
+      name: 'Vikram Malhotra',
+      title: 'VP of Engineering & Tech Lead',
+      image: '/interviewers/vikram.jpg',
+      personality: 'Professional'
+    }
+  );
+  const activeAgent = currentAgent;
 
   // Call duration timer
   useEffect(() => {
@@ -460,6 +463,56 @@ export default function LiveInterviewRoom() {
                     {isSpeakingTTS ? 'Speaking Question...' : isListening ? 'Listening Attentively...' : 'Observing Candidate'}
                   </div>
                 </div>
+              </div>
+
+              {/* In-Session Male & Female Interviewer Switcher */}
+              <div className="hidden sm:flex items-center gap-1 bg-slate-950/85 backdrop-blur-md px-2.5 py-1.5 rounded-2xl border border-slate-800/80 shadow-xl">
+                <span className="text-[10px] text-slate-400 font-semibold mr-1">Switch:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const ag = { id: 'vikram', name: 'Vikram Malhotra', title: 'VP of Engineering', personality: 'Professional', image: '/interviewers/vikram.jpg' };
+                    setCurrentAgent(ag);
+                    showToast('Switched to Vikram Malhotra (Male Interviewer)', 'info');
+                  }}
+                  className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                    currentAgent.id === 'vikram'
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  👨 Male (Vikram)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const ag = { id: 'priya', name: 'Priya Sharma', title: 'HR Director', personality: 'HR', image: '/interviewers/priya.jpg' };
+                    setCurrentAgent(ag);
+                    showToast('Switched to Priya Sharma (Female Interviewer)', 'info');
+                  }}
+                  className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                    currentAgent.id === 'priya'
+                      ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  👩 Female (Priya)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const ag = { id: 'sarah', name: 'Dr. Sarah Jenkins', title: 'Bar-Raiser Architect', personality: 'Strict', image: '/interviewers/sarah.jpg' };
+                    setCurrentAgent(ag);
+                    showToast('Switched to Dr. Sarah Jenkins (Female Interviewer)', 'info');
+                  }}
+                  className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                    currentAgent.id === 'sarah'
+                      ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  👩‍💼 Female (Sarah)
+                </button>
               </div>
 
               {/* Controls */}
